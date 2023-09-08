@@ -9,8 +9,8 @@ import User from "./models/userModel.js";
 
 try {
   await mongoose.connect(process.env.MONGO_URL); // connect to mongoDB
-  //const user = await User.findOne({ email: "test@test.com" }); demo user finding id
-  const user = await User.findOne({ email: "mdethiris@gmail.com" }); // admin user finding id
+  const user = await User.findOne({ email: "test@test.com" }); demo user finding id
+  
   const jsonJobs = JSON.parse(
     // await readFile(new URL("./utils/mockData.json", import.meta.url)) /mockData.json for demo users with 100 jobs
     await readFile(new URL("./utils/mockData.json", import.meta.url)) // mockData for admin
