@@ -1,0 +1,132 @@
+
+// import { value } from "./test-named.js";
+// import { someValue } from "./test-default.js";
+// // when we are exporting it as component we should add {} in import
+// //when we are exporting it as variable we don't need to put curly braces
+// console.log(value);
+// console.log(someValue);
+// // when working on a client we shouldn't add the .js extension
+// // while working on node we should named them as .js
+// //while working on es6 modules we should named import as test-named.js
+// // otherwise it will show error
+
+optional content
+fetch
+
+ fetch("https://www.course-api.com/react-useReducer-cart-project")
+  .then((res) => res.json())
+  .then((data) => console.log(data));
+
+  How to get data 
+
+  try {
+    const response = await fetch(
+    "https://www.course-api.com/react-useReducer-cart-project"
+    );
+    const cartData = await response.json();
+    console.log(cartData);
+  }
+  catch (error) {
+    console.log(error)
+  }
+
+  in json
+  "watch": "node --watch server.js"
+
+  nanoid locally used 
+  // we stopped working on the local id
+// import { nanoid } from "nanoid";
+// // Jobs array. it is used as rough syntax.
+// let jobs = [
+//   { id: nanoid(), company: "apple", position: "front-end" },
+//   { id: nanoid(), company: "google", position: "back-end" },
+// ];
+
+
+
+code is split up in the process of making routers and controllers 
+the main function is split up is jobcontroller.js and 
+the routes are settled in the jobrouter.js 
+// Building blocks of this application CRUD operations
+// GET all jobs
+app.get("/api/v1/jobs");
+//Create job
+app.post("/api/v1/jobs");
+// Get Single job
+app.get("/api/v1/jobs/:id");
+// Edit job
+app.patch("/api/v1/jobs/:id");
+// Delete job
+app.delete("/api/v1/jobs/:id");
+
+
+create job old model
+  // const { company, position } = req.body;
+  // if (!company || !position) {
+  //   return res.status(400).json({ msg: "Please provide company and position" });
+  // }
+  // const id = nanoid(10);
+  // const job = { id, company, position };
+  // jobs.push(job);
+
+ error handlers
+
+  // custom error created and used as component here. the logic is setup in custom error.js
+//  throw new NotFoundError(`no job with id ${id}`);
+
+
+export const validateIdParam = withValidationErrors([
+  param("id").custom(async (value) => {
+    const isValidId = mongoose.Types.ObjectId.isValid(value);
+    if (!isValidId) throw new BadRequestError("invalid MongoDB id");
+    const job = await Job.findById(value);
+
+    if (!job) throw new NotFoundError(`no job with id ${value}`);
+  }),
+]);
+
+code refactored for easy code.
+
+export const getJob = async (req, res) => {
+  const { id } = req.params;
+  const job = await Job.findById(id);
+
+  // if (!job) throw new NotFoundError(`no job with id ${id}`); this should be removed because of we refactored it.
+  // custom error for not found used and code refactored
+  // { return res.status(404).json({ msg: `no job with id ${id}` }); } old code.
+  res.status(StatusCodes.OK).json({ job });
+
+  
+ 1st code
+  export const getJob = async (req, res) => {
+  const { id } = req.params;
+  const job = await Job.findById(id);
+   // { return res.status(404).json({ msg: `no job with id ${id}` }); }
+    res.status(StatusCodes.OK).json({ job });
+
+2nd code refactored with new error component from custom error 
+export const getJob = async (req, res) => {
+  const { id } = req.params;
+  const job = await Job.findById(id);
+  if (!job) throw new NotFoundError(`no job with id ${id}`);
+    res.status(StatusCodes.OK).json({ job });
+
+3rd time  code refactored
+export const getJob = async (req, res) => {
+  const { id } = req.params;
+  const job = await Job.findById(id);
+  // this line removed and the error is setup as  common for all in validation middleware
+  res.status(StatusCodes.OK).json({ job });
+  
+  4th code refactored
+  export const getJob = async (req, res) => {
+  const { id } = req.params; //this part should be removed
+  const job = await Job.findById(req.params.id); // and used here.
+  // this line removed and the error is setup as  common for all in validation middleware
+  res.status(StatusCodes.OK).json({ job });
+
+user model authRouter and authController
+//simple ways to create controller and router for user and setup in the server.js  for user functionality
+// step 1 create this file and export two requests login and register
+//step 2 create a authRouter in router and import router from express and setup router.route for login and register
+//step 3 import the authRouter in server js and called it after the jobRouter
