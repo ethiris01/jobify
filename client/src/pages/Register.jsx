@@ -39,7 +39,11 @@ const Register = () => {
         />
         <FormRow type="text" name="location" placeholder="Earth" />
         <FormRow type="email" name="email" placeholder="name@gmail.com" />
-        <FormRow type="password" name="password" placeholder="secret123" />
+        <FormRow
+          type="password"
+          name="password"
+          placeholder=" Min 8 characters"
+        />
         <SubmitBtn formBtn />
         {/* the class used and condition for submitting */}
         {/* <button type="submit" className="btn btn-block" disabled={isSubmitting}>

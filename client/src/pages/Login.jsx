@@ -61,7 +61,7 @@ const Login = () => {
         <h4>Login</h4>
         {errors?.msg && <p style={{ color: "red" }}> {errors.msg}</p>}
         <FormRow type="email" name="email" placeholder="name@gmail.com" />
-        <FormRow type="password" name="password" placeholder="secrets123" />
+        <FormRow type="password" name="password" placeholder="********" />
         <SubmitBtn />
         {/* <button
             type="submit"
