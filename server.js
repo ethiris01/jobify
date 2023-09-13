@@ -37,7 +37,7 @@ if (process.env.NODE_ENV === "development") {
   app.use(morgan("dev"));
 }
 // // public folder dirname used.
-app.use(express.static(path.resolve(__dirname, "./public")));
+app.use(express.static(path.resolve(__dirname, "./client/dist")));
 
 // cookie parser used.
 app.use(cookieParser());
@@ -72,9 +72,8 @@ app.use("/api/v1/users", authenticateUser, userRouter); // user stats route
 app.use("/api/v1/auth", authRouter); // authenticate user route
 
 // entry point for front-end
-
 app.get("*", (req, res) => {
-  res.sendFile(path.resolve(__dirname, "./public", "index.html"));
+  res.sendFile(path.resolve(__dirname, "./client/dist", "index.html"));
 });
 // not found Error -  it will take care of url ex:jobs -> joab
 app.use("*", (req, res) => {
