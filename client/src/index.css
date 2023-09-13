@@ -288,15 +288,22 @@ button:disabled {
   }
 }
 
-.loading {
+/* .loading {
   width: 6rem;
   height: 6rem;
   border: 5px solid var(--grey-400);
   border-radius: 50%;
   border-top-color: var(--primary-500);
   animation: spinner 0.6s linear infinite;
+} */
+.loading {
+  width: 6rem;
+  height: 6rem;
+  border: 5px solid #f3f3f3;
+  border-radius: 50%;
+  border-top: 5px solid #6527be;
+  animation: spinner 0.6s linear infinite;
 }
-
 /* title */
 
 .title {
