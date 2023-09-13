@@ -3,7 +3,7 @@ import { StatusCodes } from "http-status-codes";
 import User from "../models/userModel.js";
 import Job from "../models/jobModel.js";
 import cloudinary from "cloudinary";
-import { promises as fs } from "fs";
+import { formatImage } from "../middleware/multerMiddleware.js";
 // get currentUser
 export const getCurrentUser = async (req, res) => {
   const user = await User.findOne({ _id: req.user.userId }); // user were the all scheme invoked
@@ -25,8 +25,11 @@ export const UpdateUser = async (req, res) => {
 
   if (req.file) {
     // if exists, newUser is a req from the user
-    const response = await cloudinary.v2.uploader.upload(req.file.path); // the response will be uploaded
-    await fs.unlink(req.file.path); // after that the it will unlink from cloud for storage
+    const file = formatImage(req.file);
+
+    const response = await cloudinary.v2.uploader.upload(file); // the response will be uploaded
+
+    // await fs.unlink(req.file.path); // after that the it will unlink from cloud for storage
     newUser.avatar = response.secure_url; // it used to secure the url
     newUser.avatarPublicId = response.public_id; // avatarId is public
   }
