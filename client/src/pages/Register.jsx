@@ -42,7 +42,7 @@ const Register = () => {
         <FormRow
           type="password"
           name="password"
-          placeholder=" Min 8 characters"
+          placeholder="Max 8 characters"
         />
         <SubmitBtn formBtn />
         {/* the class used and condition for submitting */}
