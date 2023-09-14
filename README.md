@@ -6472,7 +6472,7 @@ import { useQuery } from "@tanstack/react-query";
 const statsQuery = {
   queryKey: ["stats"],
   queryFn: async () => {
-    const response = await customFetch.get("/jobs/statss");
+    const response = await customFetch.get("/jobs/stats");
     return response.data;
   },
 };

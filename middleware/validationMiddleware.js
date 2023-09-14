@@ -88,8 +88,10 @@ export const validateRegisterInput = withValidationErrors([
 export const validateLoginInput = withValidationErrors([
   body("email") // validation for email
     .notEmpty()
-    .withMessage("email is required"),
-  body("password").notEmpty().withMessage("password is required"), //
+    .withMessage("email is required")
+    .isEmail()
+    .withMessage("invalid email format"),
+  body("password").notEmpty().withMessage("password is required"),
 ]);
 
 // validate for update user

@@ -5,33 +5,54 @@ import { JOB_STATUS, JOB_TYPE } from "../../../utils/constants";
 import { Form, redirect } from "react-router-dom";
 import { toast } from "react-toastify";
 import customFetch from "../utils/customFetch";
-// loader which get user data and setup in server.
-export const loader = async ({ params }) => {
-  try {
-    const { data } = await customFetch.get(`/jobs/${params.id}`); // so used get request.
-    return data;
-  } catch (error) {
-    toast.error(error?.response?.data?.msg);
-    return redirect("/dashboard/all-jobs");
-  }
-};
-// the action is used after submitting the form and it will reloads is it.
-export const action = async ({ request, params }) => {
-  const formData = await request.formData(); // requested data stored here.
-  const data = Object.fromEntries(formData); // the Obj with fromEntries passed here as parameter.
-  try {
-    await customFetch.patch(`/jobs/${params.id}`, data);
-    toast.success("Job Edited Successfully");
-    return redirect("/dashboard/all-jobs");
-  } catch (error) {
-    toast.error(error?.response?.data?.msg);
-    return error;
-  }
+import { useQuery } from "@tanstack/react-query";
+
+// queryCLient for single job
+const singleJobQuery = (id) => {
+  return {
+    queryKey: ["job", id],
+    queryFn: async () => {
+      const { data } = await customFetch.get(`/jobs/${id}`);
+      return data;
+    },
+  };
 };
 
-// this a actual component the loader and action is used for accessing these fucntions
+export const loader =
+  (queryClient) =>
+  async ({ params }) => {
+    try {
+      await queryClient.ensureQueryData(singleJobQuery(params.id));
+      return params.id;
+    } catch (error) {
+      toast.error(error?.response?.data?.msg);
+      return redirect("/dashboard/all-jobs");
+    }
+  };
+
+export const action =
+  (queryClient) =>
+  async ({ request, params }) => {
+    const formData = await request.formData();
+    const data = Object.fromEntries(formData);
+    try {
+      await customFetch.patch(`/jobs/${params.id}`, data);
+      queryClient.invalidateQueries(["jobs"]);
+
+      toast.success("Job edited successfully");
+      return redirect("/dashboard/all-jobs");
+    } catch (error) {
+      toast.error(error?.response?.data?.msg);
+      return error;
+    }
+  };
+
 const EditJob = () => {
-  const { job } = useLoaderData();
+  const id = useLoaderData();
+
+  const {
+    data: { job },
+  } = useQuery(singleJobQuery(id));
   // console.log(job);
   //  code refactored for btn component
   // const navigation = useNavigation();

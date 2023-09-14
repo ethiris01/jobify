@@ -10,25 +10,29 @@ import { FormRow, Logo, SubmitBtn } from "../components";
 import customFetch from "../utils/customFetch";
 import { toast } from "react-toastify";
 // action used to submit the form as post method
-export const action = async ({ request }) => {
-  const formData = await request.formData();
-  const data = Object.fromEntries(formData);
-  //useActionData method - for error of using short passwords
-  const errors = { msg: "" };
-  if (data.password.length < 8) {
-    errors.msg = "Password should be at least 8 characters!";
-    return errors;
-  }
-  try {
-    await customFetch.post("/auth/login", data);
-    toast.success("Login successful");
-    return redirect("/dashboard");
-  } catch (error) {
-    toast.error(error?.response.data?.msg);
-    // toast.error(error?.response.errors?.msg);
-    return error;
-  }
-};
+
+export const action =
+  (queryClient) =>
+  async ({ request }) => {
+    const formData = await request.formData();
+    const data = Object.fromEntries(formData);
+    //useActionData method - for error of using short passwords
+    const errors = { msg: "" };
+    if (data.password.length < 8) {
+      errors.msg = "Password should be at least 8 characters!";
+      return errors;
+    }
+    try {
+      await customFetch.post("/auth/login", data);
+      queryClient.invalidateQueries(); // queryClient queries
+      toast.success("Login successful");
+      return redirect("/dashboard");
+    } catch (error) {
+      toast.error(error?.response.data?.msg);
+      // toast.error(error?.response.errors?.msg);
+      return error;
+    }
+  };
 
 const Login = () => {
   // test user functionality user created in database

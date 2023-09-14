@@ -10,11 +10,20 @@ import { Navbar, BigSidebar, SmallSidebar, Loading } from "../components";
 import { useState, createContext, useContext } from "react";
 import customFetch from "../utils/customFetch";
 import { toast } from "react-toastify";
+import { useQuery } from "@tanstack/react-query";
 // loader functionality with get current user
-export const loader = async () => {
-  try {
-    const { data } = await customFetch.get("/users/current-user");
+
+const userQuery = {
+  queryKey: ["user"],
+  queryFn: async () => {
+    const { data } = await customFetch("/users/current-user");
     return data;
+  },
+};
+
+export const loader = (queryClient) => async () => {
+  try {
+    return await queryClient.ensureQueryData(userQuery);
   } catch (error) {
     return redirect("/");
   }
@@ -33,8 +42,9 @@ export const loader = async () => {
 // step 5 it settled as prop in the dashboard
 const DashboardContext = createContext();
 
-const Dashboard = ({ isDarkThemeEnabled }) => {
-  const { user } = useLoaderData(); ///is used to load the data before the users.
+const Dashboard = ({ isDarkThemeEnabled, queryClient }) => {
+  const { user } = useQuery(userQuery)?.data;
+  ///is used to load the data before the users.
   // user is getting from name property
   const navigate = useNavigate();
   const navigation = useNavigation();
@@ -64,6 +74,7 @@ const Dashboard = ({ isDarkThemeEnabled }) => {
   const logoutUser = async () => {
     navigate("/");
     await customFetch.get("/auth/logout");
+    queryClient.invalidateQueries();
     toast.success("Logging out!");
   };
   return (
