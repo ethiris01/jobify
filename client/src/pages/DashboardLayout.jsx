@@ -7,10 +7,11 @@ import {
 } from "react-router-dom";
 import Wrapper from "../assets/wrappers/Dashboard";
 import { Navbar, BigSidebar, SmallSidebar, Loading } from "../components";
-import { useState, createContext, useContext } from "react";
+import { useState, createContext, useContext, useEffect } from "react";
 import customFetch from "../utils/customFetch";
 import { toast } from "react-toastify";
 import { useQuery } from "@tanstack/react-query";
+
 // loader functionality with get current user
 
 const userQuery = {
@@ -55,8 +56,7 @@ const Dashboard = ({ isDarkThemeEnabled, queryClient }) => {
   const [showSidebar, setShowSidebar] = useState(false);
   const [isDarkTheme, setIsDarkTheme] = useState(isDarkThemeEnabled);
   // step 6 state is used here to work on the flow
-
-  // const [isDarkTheme, setIsDarkTheme] = useState(false);
+  const [isAuthError, setIsAuthError] = useState(false); // axios interceptors
 
   //step1 set up the function
   const toggleDarkTheme = () => {
@@ -77,6 +77,27 @@ const Dashboard = ({ isDarkThemeEnabled, queryClient }) => {
     queryClient.invalidateQueries();
     toast.success("Logging out!");
   };
+
+  // axios interceptors
+
+  customFetch.interceptors.response.use(
+    (response) => {
+      return response;
+    },
+    (error) => {
+      if (error?.response?.status === 401) {
+        setIsAuthError(true);
+      }
+      return Promise.reject(error);
+    }
+  );
+  // useEffect for axios interceptors
+
+  useEffect(() => {
+    if (!isAuthError) return;
+    logoutUser();
+  }, [isAuthError]);
+
   return (
     <DashboardContext.Provider
       value={{

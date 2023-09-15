@@ -7,7 +7,8 @@ import morgan from "morgan";
 import mongoose from "mongoose"; // Connect DB
 import cookieParser from "cookie-parser"; // cookie parser is used to convert the cookie
 import cloudinary from "cloudinary"; // cloudinary for storing images.
-
+import helmet from "helmet"; // security package 1
+import mongoSanitize from "express-mongo-sanitize"; // security package 2
 //testing with validators
 // import { validateTest } from "./middleware/validationMiddleware.js";
 // routers
@@ -44,16 +45,21 @@ app.use(cookieParser());
 // express used.
 app.use(express.json());
 
-// get method is used to get the request from the user and communicate with server
-app.get("/", (req, res) => {
-  res.send("Hello World");
-});
+// security packages
+app.use(helmet());
+app.use(mongoSanitize());
+
+// // get method is used to get the request from the user and communicate with server
+// app.get("/", (req, res) => {
+//   res.send("Hello World");
+// });
+
 // This a home route.
 //  post method is used for response from the web.
-app.post("/", (req, res) => {
-  console.log(req);
-  res.json({ message: "data received", data: req.body });
-});
+// app.post("/", (req, res) => {
+//   console.log(req);
+//   res.json({ message: "data received", data: req.body });
+// });
 
 // Testing the route fpr validate the users.
 // app.post("/api/v1/test", validateTest, (req, res) => {
@@ -62,9 +68,9 @@ app.post("/", (req, res) => {
 // });
 
 // testing proxy setup
-app.get("/api/v1/test", (req, res) => {
-  res.json({ msg: "test route" });
-});
+// app.get("/api/v1/test", (req, res) => {
+//   res.json({ msg: "test route" });
+// });
 
 // code refractured and used in jobController and jobRouter
 app.use("/api/v1/jobs", authenticateUser, jobRouter); // all jobs route
