@@ -1,3 +1,7 @@
+
+![Landing page ](https://github.com/ethiris01/jobify/assets/130985778/455e13cc-1aec-4c0b-9434-c0a15772c679)
+
+
 #### Complete App
 
 [Jobify](https://jobify.live/)
